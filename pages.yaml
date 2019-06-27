@@ -1,6 +1,9 @@
 
 clickdummy:
   title: "My Prototype"
+  width: "375px"
+  height: "667px"
+  imageType: "jpg"
   pages:
     start:
       goto: "cam"

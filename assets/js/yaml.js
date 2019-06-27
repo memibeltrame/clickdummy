@@ -9,16 +9,22 @@ YAML.load('pages.yaml', function(result)
     $("#pageTitle").html(clickdummy.title);
     var pages = clickdummy.pages;
     var pagestart = "first-page";
+    var imageType = "jpg";
+    if(typeof(clickdummy.imageType) != "undefined"){
+        imageType = clickdummy.imageType;
+    }
+
     //console.log(clickdummy);
     for (var pagekey in pages) {
         let page = pages[pagekey];
         let animation = "moveInFromRight";
+
         if(typeof(page.animation) != "undefined"){
             animation = page.animation;
         }
 
         let markup = '<div id="page-'+pagekey+'" class="noTopbar '+pagestart+' pt-page container">';
-        markup +=    '    <img class="img-responsive goto" data-goto="'+page.goto+'" data-animation="'+animation+'" src="pageimages/'+pagekey+'.png" alt="">';
+        markup +=    '    <img class="img-responsive goto" data-goto="'+page.goto+'" data-animation="'+animation+'" src="pageimages/'+pagekey+'.'+imageType+'" alt="">';
         markup +=    '</div>';
 
 
