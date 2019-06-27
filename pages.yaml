@@ -9,6 +9,7 @@ clickdummy:
       goto: "longpage"
     longpage:
       goto: "picture"
+      animation: "noAnimation"
     picture:
       goto: "start"
       animation: "moveInFromLeft"

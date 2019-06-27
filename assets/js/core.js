@@ -242,9 +242,9 @@ var counter= 1;
                 $(".topbarContainer").removeClass("hide");
                 $("#tabbarContainer").removeClass("hide");
                 break;
-            case "noTransition":
+            case "noAnimation":
                 outClass = 'pt-page-fastfade';
-                inClass = 'pt-page-noTransition';
+                inClass = 'pt-page-noAnimation';
                 break;
             case "moveOutFromTop2":
                 outClass = 'pt-page-moveToBottom';

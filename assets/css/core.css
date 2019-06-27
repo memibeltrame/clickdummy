@@ -59,9 +59,9 @@
     animation:  fade .1s ease both;
 }
 
-.pt-page-noTransition {
-    -webkit-animation: noTransition .1s ease both;
-    animation:  noTransition .1s ease both;
+.pt-page-noAnimation {
+    -webkit-animation: noAnimation .1s ease both;
+    animation:  noAnimation .1s ease both;
 }
 
 /* move from / to and fade */
@@ -204,11 +204,11 @@
     to { opacity: 0.3; }
 }
 
-@-webkit-keyframes noTransition {
+@-webkit-keyframes noAnimation {
     to { }
     from { opacity: 1; }
 }
-@keyframes noTransition {
+@keyframes noAnimation {
     to { }
     from { opacity: 1; }
 }
