@@ -13,6 +13,12 @@ YAML.load('pages.yaml', function(result)
     if(typeof(clickdummy.imageType) != "undefined"){
         imageType = clickdummy.imageType;
     }
+    if(typeof(clickdummy.width) != "undefined"){
+        $(".pt-perspective").css("width", clickdummy.width);
+    }
+    if(typeof(clickdummy.height) != "undefined"){
+        $(".pt-perspective").css("height", clickdummy.height);
+    }
 
     //console.log(clickdummy);
     for (var pagekey in pages) {

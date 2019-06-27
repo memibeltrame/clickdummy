@@ -1,14 +1,13 @@
 
 clickdummy:
   title: "My Prototype"
-  width: "375px"
-  height: "667px"
-  imageType: "jpg"
   pages:
     start:
       goto: "cam"
       animation: "moveInFromBottom"
     cam:
+      goto: "longpage"
+    longpage:
       goto: "picture"
     picture:
       goto: "start"
