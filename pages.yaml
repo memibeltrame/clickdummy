@@ -1,6 +1,7 @@
 
 clickdummy:
   title: "My Prototype"
+  imageFileType: "png"
   pages:
     start:
       goto: "cam"

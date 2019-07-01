@@ -9,9 +9,9 @@ YAML.load('pages.yaml', function(result)
     $("#pageTitle").html(clickdummy.title);
     var pages = clickdummy.pages;
     var pagestart = "first-page";
-    var imageType = "jpg";
-    if(typeof(clickdummy.imageType) != "undefined"){
-        imageType = clickdummy.imageType;
+    var imageFileType = "jpg";
+    if(typeof(clickdummy.imageFileType) != "undefined"){
+        imageFileType = clickdummy.imageFileType;
     }
     if(typeof(clickdummy.width) != "undefined"){
         $(".pt-perspective").css("width", clickdummy.width);
@@ -30,7 +30,7 @@ YAML.load('pages.yaml', function(result)
         }
 
         let markup = '<div id="page-'+pagekey+'" class="noTopbar '+pagestart+' pt-page container">';
-        markup +=    '    <img class="img-responsive goto" data-goto="'+page.goto+'" data-animation="'+animation+'" src="pageimages/'+pagekey+'.'+imageType+'" alt="">';
+        markup +=    '    <img class="img-responsive goto" data-goto="'+page.goto+'" data-animation="'+animation+'" src="pageimages/'+pagekey+'.'+imageFileType+'" alt="">';
         markup +=    '</div>';
 
 
