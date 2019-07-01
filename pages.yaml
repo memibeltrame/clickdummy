@@ -1,16 +1,12 @@
 
 clickdummy:
   title: "My Prototype"
-  imageFileType: "png"
   pages:
     start:
       goto: "cam"
       animation: "moveInFromBottom"
     cam:
-      goto: "longpage"
-    longpage:
       goto: "picture"
-      animation: "noAnimation"
     picture:
       goto: "start"
       animation: "moveInFromLeft"
