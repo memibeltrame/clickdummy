@@ -6,7 +6,11 @@ console.log($("#yaml").html());
 YAML.load('pages.yaml', function(result)
 {
     clickdummy = result.clickdummy;
-    $("#pageTitle").html(clickdummy.title);
+
+    if(typeof(clickdummy.title) != "undefined"){
+        $("#pageTitle").html(clickdummy.title);
+    }
+    
     var pages = clickdummy.pages;
     var pagestart = "first-page";
     var imageFileType = "jpg";
@@ -20,22 +24,41 @@ YAML.load('pages.yaml', function(result)
         $(".pt-perspective").css("height", clickdummy.height);
     }
 
+    // showHotspots if requested
+    if(typeof(clickdummy.showHotspots) != "undefined"  && clickdummy.showHotspots == true){
+        $("#pt-main").addClass("showHotspots");
+    }
+
+    var neverAnimate = false;
+    if(typeof(clickdummy.neverAnimate) != "undefined"){
+        neverAnimate = clickdummy.neverAnimate;
+    }
+
     //console.log(clickdummy);
     for (var pagekey in pages) {
         let page = pages[pagekey];
         let animation = "moveInFromRight";
-
+        if(neverAnimate == true){
+            animation = "noAnimation"
+        }
         if(typeof(page.animation) != "undefined"){
             animation = page.animation;
         }
 
+
+
+        let image = pagekey;
+        if(typeof(page.image) != "undefined"){
+            image = page.image;
+        }
+
         let markup = '<div id="page-'+pagekey+'" class="noTopbar '+pagestart+' pt-page container">';
-        markup +=    '    <img class="img-responsive goto" data-goto="'+page.goto+'" data-animation="'+animation+'" src="pageimages/'+pagekey+'.'+imageFileType+'" alt="">';
+        markup +=    '    <img class="img-responsive goto" data-goto="'+page.goto+'" data-animation="'+animation+'" src="pageimages/'+image+'.'+imageFileType+'" alt="">';
+        
+        // add hotspots markup;
+        markup += getHotspotsMarkup(page.hotspots);
+
         markup +=    '</div>';
-
-
-
-
 
         $( markup ).appendTo( "#pt-main" );
         var pagestart = "";
@@ -66,6 +89,32 @@ YAML.load('pages.yaml', function(result)
     setTimeout(loadScript("assets/js/core.js", function() {
       // console.log('script ready!'); 
     }),1000);
+
+    function getHotspotsMarkup(hotspots){
+        let markup = "";
+        if(typeof(hotspots) == "undefined"){
+            return markup;
+        }
+        for (var key in hotspots) {
+            let hotspot = hotspots[key];
+            let animation = "noAnimation";
+
+            if(typeof(hotspot.animation) != "undefined"){
+                animation = hotspot.animation;
+            }
+
+            markup += '<div class="hotspot goto" ';
+            markup += 'data-goto="'+hotspot.goto+'" ';
+            markup += 'data-animation="'+animation+'" ';
+            markup += 'style="';
+            markup += 'top:'+hotspot.top+';';
+            markup += 'left:'+hotspot.left+';';
+            markup += 'width:'+hotspot.width+';';
+            markup += 'height:'+hotspot.height+';';
+            markup += '"></div>';
+        }
+        return markup;
+    }
     
 
 
