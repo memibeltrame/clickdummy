@@ -57,6 +57,7 @@ YAML.load('pages.yaml', function(result)
         
         // add hotspots markup;
         markup += getHotspotsMarkup(page.hotspots);
+        markup += getTextMarkup(page.textblocks);
 
         markup +=    '</div>';
 
@@ -112,6 +113,24 @@ YAML.load('pages.yaml', function(result)
             markup += 'width:'+hotspot.width+';';
             markup += 'height:'+hotspot.height+';';
             markup += '"></div>';
+        }
+        return markup;
+    }
+    function getTextMarkup(textblocks){
+        let markup = "";
+        if(typeof(textblocks) == "undefined"){
+            return markup;
+        }
+        for (var key in textblocks) {
+            let textblock = textblocks[key];
+
+            markup += '<div class="textblock" ';
+            markup += 'style="';
+            markup += 'top:'+textblock.top+';';
+            markup += 'left:'+textblock.left+';';
+            markup += 'font-size:'+textblock.size+';';
+            markup += 'color:'+textblock.color+';';
+            markup += '">'+textblock.text+'</div>';
         }
         return markup;
     }

@@ -3073,6 +3073,11 @@ a {
     margin-top: 0;
 }
 
+.textblock{
+    position: absolute;
+    z-index: 1001;
+}
+
 .hotspot{
     position: absolute;
     z-index: 1000;
