@@ -1,4 +1,4 @@
-
+var longpress = false;
 var PageTransitions = (function() {
 
     var $main = $( '#pt-main' ),
@@ -13,6 +13,7 @@ var PageTransitions = (function() {
         animEndEventName = "animationend",
         // support css animations
         support = true;
+        
 
 var counter= 1;
     function init() {
@@ -20,7 +21,7 @@ var counter= 1;
         console.log(counter);
         counter++;
         if($("#pt-main").hasClass("wait")){
-            console.log("wait");
+            //console.log("wait");
             //setTimeout(init(),1000);
             return;
         }
@@ -28,7 +29,7 @@ var counter= 1;
         $pages.each( function() {
 
             var $page = $( this );
-            console.log($page);
+            //console.log($page);
 
             var i = 0;
             $page.data( 'originalClassList', $page.attr( 'class' ) );
@@ -62,6 +63,12 @@ var counter= 1;
             return false;
         }
 
+        if( longpress ) {
+            longpress = false;
+            return false;
+        }
+
+        
         isAnimating = true;
 
         // var $currPage = $pages.eq( current );

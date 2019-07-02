@@ -129,8 +129,19 @@ YAML.load('pages.yaml', function(result)
       }
     });
 
+    // Handle Two finger tap
+    var el = document.getElementById("pt-main");
+    el.addEventListener("touchstart", handleStart, false);
 
-
-
+    function handleStart( e ) {
+    
+        if (e.touches.length > 1){
+            longpress = true;
+            $("#pt-main").addClass("showHotspots");
+            setTimeout(function(){
+                $("#pt-main").removeClass("showHotspots");
+           }, 2000);
+        }
+    };
 
 });
