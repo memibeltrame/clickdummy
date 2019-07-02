@@ -37,4 +37,4 @@ clickdummy is for you if:
 For a detailed documentation visit https://clickdummy.lessamess.ch/
 
 ## Licence
-clickdummy is opensource and Published under the MIT Licence.
+clickdummy is open-source software and published under the MIT Licence.
