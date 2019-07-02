@@ -116,6 +116,19 @@ YAML.load('pages.yaml', function(result)
         return markup;
     }
     
+    $( "body" ).keydown(function( event ) {
+      if ( event.which == 18 ) {
+        $("#pt-main").addClass("showHotspots");
+        event.preventDefault();
+      }
+    });
+    $( "body" ).keyup(function( event ) {
+      if ( event.which == 18 ) {
+        $("#pt-main").removeClass("showHotspots");
+        event.preventDefault();
+      }
+    });
+
 
 
 

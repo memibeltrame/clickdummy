@@ -250,6 +250,14 @@ var counter= 1;
                 outClass = 'pt-page-moveToBottom';
                 inClass = 'pt-page-moveFromTop';
                 break;
+            case "flipRight":
+                outClass = 'pt-page-flipOutRight';
+                inClass = 'pt-page-flipInLeft pt-page-delay300';
+                break;
+            case "flipLeft":
+                outClass = 'pt-page-flipOutLeft';
+                inClass = 'pt-page-flipInRight pt-page-delay300';
+                break;
 
         }
 
