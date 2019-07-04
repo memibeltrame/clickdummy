@@ -1,33 +1,17 @@
+
 index:
   title: "My Prototype"
-  neverAnimate: false
-  showHotspots: false
   pages:
     start:
       goto: "cam"
       animation: "moveInFromBottom"
     cam:
       goto: "picture"
-      hotspots:
-        infobutton:
-          top: "600px"
-          left: "316px"
-          width: "54px"
-          height: "44px"
-          goto: "camFront"
-          animation: "flipRight"
-    camFront:
-      goto: "picture"
-      animation: "noAnimation"
-      hotspots:
-        infobutton:
-          top: "600px"
-          left: "316px"
-          width: "54px"
-          height: "44px"
-          goto: "cam"
-          animation: "flipLeft"
     picture:
       goto: "start"
       animation: "moveInFromLeft"
+
+
+
+
 
