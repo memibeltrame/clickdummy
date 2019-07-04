@@ -18,7 +18,6 @@ var PageTransitions = (function() {
 var counter= 1;
     function init() {
 
-        console.log(counter);
         counter++;
         if($("#pt-main").hasClass("wait")){
             //console.log("wait");
