@@ -13,14 +13,14 @@ if(fileName[0].length > 0 && fileName[0] != "index.html"){
 YAML.load('pages.yaml', function(result)
 {
     if(typeof(result[yamlVar]) == "undefined"){
-        console.log(result);
+        // Take the first entry in the yaml file 
+        // This is the case when there is no entry for the current page.
         clickdummy = result[Object.keys(result)[0]]
     } else {
         clickdummy = result[yamlVar];
     }
 
-    
-
+    //Change the content of the title tag
     if(typeof(clickdummy.title) != "undefined"){
         $("#pageTitle").html(clickdummy.title);
     }
@@ -28,12 +28,18 @@ YAML.load('pages.yaml', function(result)
     var pages = clickdummy.pages;
     var pagestart = "first-page";
     var imageFileType = "jpg";
+
+    // check if the default filetype is changed
     if(typeof(clickdummy.imageFileType) != "undefined"){
         imageFileType = clickdummy.imageFileType;
     }
+
+    // check if the default width is changed
     if(typeof(clickdummy.width) != "undefined"){
         $(".pt-perspective").css("width", clickdummy.width);
     }
+
+    // check if the default height is changed
     if(typeof(clickdummy.height) != "undefined"){
         $(".pt-perspective").css("height", clickdummy.height);
     }
@@ -43,32 +49,49 @@ YAML.load('pages.yaml', function(result)
         $("#pt-main").addClass("showHotspots");
     }
 
+    // check if the default animation is just an unamitated page-change
     var neverAnimate = false;
     if(typeof(clickdummy.neverAnimate) != "undefined"){
         neverAnimate = clickdummy.neverAnimate;
     }
 
-    //console.log(clickdummy);
+    // go through pages and build the markup
     for (var pagekey in pages) {
+
+        // get the current page data
         let page = pages[pagekey];
-        let animation = "moveInFromRight";
-        if(neverAnimate == true){
-            animation = "noAnimation"
-        }
-        if(typeof(page.animation) != "undefined"){
-            animation = page.animation;
-        }
 
+        // define animation
+        let animation = getAnimation(page);
 
-
+        // define background image
         let image = pagekey;
+        // check if another background image has been defined
         if(typeof(page.image) != "undefined"){
             image = page.image;
         }
 
+
+
         let markup = '<div id="page-'+pagekey+'" class="noTopbar '+pagestart+' pt-page container">';
-        markup +=    '    <img class="img-responsive goto" data-goto="'+page.goto+'" data-animation="'+animation+'" src="pageimages/'+image+'.'+imageFileType+'" alt="">';
+
+        // check if the page uses a link instead of goto
+
+        if(page.link){
+            markup += '<a href="' + page.link + '">'; 
+        }
+
+        markup +=    '    <img class="img-responsive ';
+        if(typeof(page.goto) == "undefined"){
+            markup +=    ' "';
+        } else {
+            markup +=    ' goto"  data-goto="'+page.goto+'" data-animation="'+animation+'"';
+        }
+        markup +=    ' src="pageimages/'+image+'.'+imageFileType+'" alt="" >';
         
+        if(page.link){
+            markup += '</a>'; 
+        }
         // add hotspots markup;
         markup += getHotspotsMarkup(page.hotspots);
         markup += getTextMarkup(page.textblocks);
@@ -78,6 +101,18 @@ YAML.load('pages.yaml', function(result)
         $( markup ).appendTo( "#pt-main" );
         var pagestart = "";
     };
+
+
+    function getAnimation(page){
+        let animation = "moveInFromRight";
+        if(neverAnimate == true){
+            animation = "noAnimation"
+        }
+        if(typeof(page.animation) != "undefined"){
+            animation = page.animation;
+        }
+        return animation;
+    } 
    
     function loadScript( url, callback ) {
       var script = document.createElement( "script" )
