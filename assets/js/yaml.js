@@ -10,6 +10,8 @@ if(fileName[0].length > 0 && fileName[0] != "index.html"){
     yamlVar = page[0];
 }
 
+
+
 YAML.load('pages.yaml', function(result)
 {
     if(typeof(result[yamlVar]) == "undefined"){
@@ -24,7 +26,7 @@ YAML.load('pages.yaml', function(result)
     if(typeof(clickdummy.title) != "undefined"){
         $("#pageTitle").html(clickdummy.title);
     }
-    
+    var clickthrough = true;
     var pages = clickdummy.pages;
     var pagestart = "first-page";
     var imageFileType = "jpg";
@@ -49,11 +51,20 @@ YAML.load('pages.yaml', function(result)
         $("#pt-main").addClass("showHotspots");
     }
 
+
+    // check clickthrough 
+    if(typeof(clickdummy.clickthrough) != "undefined"){
+        clickthrough = clickdummy.clickthrough;
+    }
+
+
     // check if the default animation is just an unamitated page-change
     var neverAnimate = false;
     if(typeof(clickdummy.neverAnimate) != "undefined"){
         neverAnimate = clickdummy.neverAnimate;
     }
+
+    
 
     // go through pages and build the markup
     for (var pagekey in pages) {
@@ -66,41 +77,68 @@ YAML.load('pages.yaml', function(result)
 
         // define background image
         let image = pagekey;
+
         // check if another background image has been defined
         if(typeof(page.image) != "undefined"){
             image = page.image;
         }
 
+        // define clickthrough
+        let pageclickthrough = clickthrough;
+        if(typeof(page.clickthrough) != "undefined"){
+            pageclickthrough = page.clickthrough;
+        }
 
+
+        // -----------------------------
+        // BUILD MARKUP
+        // -----------------------------
 
         let markup = '<div id="page-'+pagekey+'" class="noTopbar '+pagestart+' pt-page container">';
 
-        // check if the page uses a link instead of goto
+        // Add header if defined
+        if(typeof(page.header) != "undefined"){
+            markup += getHeaderMarkup(pagekey, page);
+        }
 
+        // check if the page uses a link instead of goto
         if(page.link){
             markup += '<a href="' + page.link + '">'; 
         }
 
         markup +=    '    <img class="img-responsive ';
-        if(typeof(page.goto) == "undefined"){
+        if(typeof(page.goto) == "undefined" || pageclickthrough == false){
             markup +=    ' "';
         } else {
             markup +=    ' goto"  data-goto="'+page.goto+'" data-animation="'+animation+'"';
         }
         markup +=    ' src="pageimages/'+image+'.'+imageFileType+'" alt="" >';
-        
+
         if(page.link){
             markup += '</a>'; 
         }
+
+        // Add footer if defined
+        if(typeof(page.footer) != "undefined"){
+            markup += getFooterMarkup(pagekey, page);
+        }
+
         // add hotspots markup;
         markup += getHotspotsMarkup(page.hotspots);
         markup += getTextMarkup(page.textblocks);
 
+        
+
         markup +=    '</div>';
 
         $( markup ).appendTo( "#pt-main" );
-        var pagestart = "";
+        pagestart = "";
     };
+
+
+    if(checkIfDefined(clickdummy, "styles")){
+        applyStyles(clickdummy.styles);
+    }
 
 
     function getAnimation(page){
@@ -139,6 +177,7 @@ YAML.load('pages.yaml', function(result)
     setTimeout(loadScript("assets/js/core.js", function() {
       // console.log('script ready!'); 
     }),1000);
+
 
     function getHotspotsMarkup(hotspots){
         let markup = "";
@@ -183,6 +222,135 @@ YAML.load('pages.yaml', function(result)
         }
         return markup;
     }
+
+    function getHeaderMarkup(pagekey, page){
+        markup = "";
+        if(typeof(page.header.image) != "undefined"){
+
+            markup +='<div id="header-'+pagekey+'" class="cd-header goto" data-goto="'+page.header.goto+'" data-animation="'+page.header.animation+'">';
+            markup +='        <img class="img-responsive" src="pageimages/'+page.header.image+'.' + imageFileType +'" alt="">';
+            markup +='</div>';
+            return markup;
+        }
+        if(typeof(page.header.navigation) != "undefined"){
+            let navigation = page.header.navigation;
+            let leftNavigation = checkIfDefined(navigation, "left");
+            let leftIcon = false;
+            let leftLabel = false;
+            let rightNavigation = checkIfDefined(navigation, "right");
+            let rightIcon = false;
+            let rightLabel = false;
+
+
+            if(leftNavigation){
+                leftIcon = checkIfDefined(navigation.left, "icon");
+                leftLabel = checkIfDefined(navigation.left, "label");
+            }
+
+            let headerTitle = checkIfDefined(navigation, "title");
+
+            if(rightNavigation){
+                rightIcon = checkIfDefined(navigation.right, "icon");
+                rightLabel = checkIfDefined(navigation.right, "label");
+            }
+
+            // Header container
+            markup +='<div id="header-'+pagekey+'" class="cd-header cd-header-navigation">';
+
+            // Left cell
+            if(leftNavigation){
+                markup +='<div class="flex-1 goto" data-goto="'+navigation.left.goto+'" data-animation="'+navigation.left.animation+'">';
+
+                if(leftIcon){
+                    markup +='<div class="grid-20n">';
+                    markup +='    <div class="v-center align-right"><i class="icon ion-'+leftIcon+'"></i></div>';
+                    markup +='    <div class="v-center">'+leftLabel+'</div>';
+                    markup +='</div>';
+                } else{
+                    markup += leftLabel;
+                }
+                markup +='</div>';
+            } else {
+                markup +='<div class="flex-1"></div>';
+            }
+            // markup +='<i class="icon ion-chevron-left topbar-icon"></i>';
+
+            // if the header has a title provide 3 cells otherwise just 2
+            if(headerTitle){
+
+                markup +='<div class="flex-2 cd-header-title">'+headerTitle+'</div>';
+            }
+
+            // right cell
+            if(rightNavigation){
+                markup +='<div class="flex-1 align-right  goto" data-goto="'+navigation.right.goto+'" data-animation="'+navigation.right.animation+'">';
+                markup +='    <div class="header-right">';
+                if(rightIcon){
+                    markup +='<i class="icon ion-'+rightIcon+'"></i>';
+                } else{
+                    markup += rightLabel;
+                }
+                markup +='    </div>';
+                markup +='</div>';
+            } else {
+                markup +='<div class="flex-1"></div>';
+            }
+
+            // header:
+            //   navigation:
+            //     left: 
+            //       icon: "ios-arrow-left"
+            //       label: "Back"
+            //       goto: "cam"
+            //       animation: "moveInFromLeft"
+            //     title: "Image"
+            //     right:
+            //       label: "Edit"
+            //       goto: "edit"
+            //       animation: "moveInFromLeft"
+
+
+            
+
+
+            // close header container
+            markup +='</div>';
+            return markup;
+        }
+        return markup;
+    }
+
+    function getFooterMarkup(pagekey, page){
+
+        let footer = page.footer;
+        //console.log(typeof(footer));
+        let markup = "";
+
+        if(typeof(footer) == "undefined"){
+            return markup;
+        }
+
+        markup += '<img class="cd-footer goto" data-goto="'+footer.goto+'" data-animation="'+page.footer.animation+'" src="pageimages/'+footer.image+'.'+imageFileType+'" alt=""> ';
+        return markup;
+    }
+
+    function applyStyles(styles){
+        if(checkIfDefined(styles, "header")){
+            let myElements = document.querySelectorAll(".cd-header-navigation");
+
+            for (let i = 0; i < myElements.length; i++) {
+                if(checkIfDefined(styles.header, "color")){
+                    myElements[i].style.color = styles.header.color;
+                }
+                if(checkIfDefined(styles.header, "backgroundColor")){
+                    myElements[i].style.backgroundColor = styles.header.backgroundColor;
+                }
+                if(checkIfDefined(styles.header, "borderBottomColor")){
+                    myElements[i].style.borderBottomColor = styles.header.borderBottomColor;
+                }
+            }
+        }
+    }
     
     $( "body" ).keydown(function( event ) {
       if ( event.which == 18 ) {
@@ -196,6 +364,78 @@ YAML.load('pages.yaml', function(result)
         event.preventDefault();
       }
     });
+
+    // -----------------------------
+    // Hotspot-Canvas:
+    // This lets you define Hotspots
+    // -----------------------------
+
+    var canvasInX = false;
+    var canvasInY = false;
+    var canvasOutX = false;
+    var canvasOutY = false;
+
+    function resetCoordinates(){
+        canvasInX = false;
+        canvasInY = false;
+        canvasOutX = false;
+        canvasOutY = false;
+        $( "#hotspotCanvas .hotspot" ).remove();
+    }
+
+    $( "body" ).keyup(function( event ) {
+      if ( event.which == 72 ) {
+        $("#hotspotCanvas").toggleClass("hide");
+        event.preventDefault();
+      }
+    })
+    ;$( "body" ).keyup(function( event ) {
+      if ( event.which == 27 ) {
+        $("#hotspotCanvas").addClass("hide");
+        resetCoordinates();
+        event.preventDefault();
+      }
+    });
+    
+    $("#hotspotCanvas").click(function(event) {
+
+        if(canvasInX != false && canvasOutX != false){
+            resetCoordinates();
+            return;
+        }
+        if(canvasInX == false){
+            canvasInX = event.clientX;
+            canvasInY = event.clientY;
+        } else{
+            canvasOutX = event.clientX;
+            canvasOutY = event.clientY;
+            let width = canvasOutX - canvasInX;
+            let height = canvasOutY - canvasInY;
+            markup = '<div class="hotspot" ';
+            markup += 'style="';
+            markup += 'top:'+canvasInY+'px;';
+            markup += 'left:'+canvasInX+'px;';
+            markup += 'width:'+width+'px;';
+            markup += 'height:'+height+'px;';
+
+            markup += '"><div class="infotext">Copied to clipboard</div><textarea id="hotspotTextarea">';
+            markup += 'top: "'+canvasInY+'px"\n';
+            markup += 'left: "'+canvasInX+'px"\n';
+            markup += 'width: "'+width+'px"\n';
+            markup += 'height: "'+height+'px"';
+            markup += '</textarea></div>';
+            $( markup ).appendTo( "#hotspotCanvas" );
+            $("#hotspotTextarea").select();
+            document.execCommand('copy');
+            $("#hotspotTextarea").blur();
+            setTimeout(function(){
+                $(".infotext").addClass("hide");
+            },2000);
+        }
+    });
+
+    // END of Hotspot-Canvas    
+
 
     // Handle Two finger tap
     var el = document.getElementById("pt-main");
@@ -212,4 +452,10 @@ YAML.load('pages.yaml', function(result)
         }
     };
 
+    function checkIfDefined(variable, key){
+        if(typeof(variable[key]) != "undefined"){
+            return variable[key];
+        }
+        return false;
+    }
 });

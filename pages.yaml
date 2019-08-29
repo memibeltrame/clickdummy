@@ -5,11 +5,61 @@ index:
     start:
       goto: "cam"
       animation: "moveInFromBottom"
+      header:
+        navigation:
+          title: "Clickdummy Demo"
     cam:
       goto: "picture"
+      hotspots:
+        switchCam:
+          top: "600px"
+          left: "316px"
+          width: "54px"
+          height: "44px"
+          goto: "picture"
+          animation: "flipRight"
     picture:
+      goto: "page3"
+      clickthrough: false
+      animation: "moveInFromLeft"
+      header:
+        image: "headerBack"
+        goto: "cam"
+        animation: "moveInFromLeft"
+      footer:
+        image: "footer"
+        goto: "page3"
+        animation: "moveInFromRight"
+    page3:
+      image: "longpage"
       goto: "start"
       animation: "moveInFromLeft"
+      header:
+        navigation:
+          left: 
+            icon: "ios-arrow-left"
+            label: "Back"
+            goto: "picture"
+            animation: "moveInFromLeft"
+          title: "Image"
+          right:
+            label: "Edit"
+            goto: "page4"
+            animation: "moveInFromBottom"
+    page4:
+      goto: "start"
+      clickthrough: false
+      header:
+        navigation:
+          label: "Edit"
+          right:
+            label: "Close"
+            goto: "page3"
+            animation: "moveOutFromTop"
+
+      
+
+
 
 
 
