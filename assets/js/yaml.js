@@ -335,18 +335,27 @@ YAML.load('pages.yaml', function(result)
     }
 
     function applyStyles(styles){
-        if(checkIfDefined(styles, "header")){
+        if(checkIfDefined(styles, "headers")){
             let myElements = document.querySelectorAll(".cd-header-navigation");
 
             for (let i = 0; i < myElements.length; i++) {
-                if(checkIfDefined(styles.header, "color")){
-                    myElements[i].style.color = styles.header.color;
+                if(checkIfDefined(styles.headers, "color")){
+                    myElements[i].style.color = styles.headers.color;
                 }
-                if(checkIfDefined(styles.header, "backgroundColor")){
-                    myElements[i].style.backgroundColor = styles.header.backgroundColor;
+                if(checkIfDefined(styles.headers, "backgroundColor")){
+                    myElements[i].style.backgroundColor = styles.headers.backgroundColor;
                 }
-                if(checkIfDefined(styles.header, "borderBottomColor")){
-                    myElements[i].style.borderBottomColor = styles.header.borderBottomColor;
+                if(checkIfDefined(styles.headers, "borderBottomColor")){
+                    myElements[i].style.borderBottomColor = styles.headers.borderBottomColor;
+                }
+            }
+
+        }
+        if(checkIfDefined(styles, "links")){
+            myElements = document.querySelectorAll(".goto");
+            for (let i = 0; i < myElements.length; i++) {
+                if(checkIfDefined(styles.links, "color")){
+                    myElements[i].style.color = styles.links.color;
                 }
             }
         }

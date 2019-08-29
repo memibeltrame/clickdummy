@@ -1,6 +1,13 @@
 
 index:
   title: "My Prototype"
+  styles:
+    headers:
+      color: "#fff"
+      backgroundColor: "#dd0000"
+      borderBottomColor: "#000"
+    links:
+      color: "#ff0"
   pages:
     start:
       goto: "cam"
@@ -41,7 +48,7 @@ index:
             label: "Back"
             goto: "picture"
             animation: "moveInFromLeft"
-          title: "Image"
+          title: "A long page"
           right:
             label: "Edit"
             goto: "page4"
