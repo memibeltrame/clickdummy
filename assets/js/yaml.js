@@ -101,21 +101,29 @@ YAML.load('pages.yaml', function(result)
             markup += getHeaderMarkup(pagekey, page);
         }
 
-        // check if the page uses a link instead of goto
-        if(page.link){
-            markup += '<a href="' + page.link + '">'; 
-        }
+        // Check if there is any HTML Content
 
-        markup +=    '    <img class="img-responsive ';
-        if(typeof(page.goto) == "undefined" || pageclickthrough == false){
-            markup +=    ' "';
+        if(typeof(page.html) != "undefined"){
+            markup += $("#"+page.html).html();
         } else {
-            markup +=    ' goto"  data-goto="'+page.goto+'" data-animation="'+animation+'"';
-        }
-        markup +=    ' src="pageimages/'+image+'.'+imageFileType+'" alt="" >';
+            // Use Image instead
 
-        if(page.link){
-            markup += '</a>'; 
+            // check if the page uses a link instead of goto
+            if(page.link){
+                markup += '<a href="' + page.link + '">'; 
+            }
+
+            markup +=    '    <img class="img-responsive ';
+            if(typeof(page.goto) == "undefined" || pageclickthrough == false){
+                markup +=    ' "';
+            } else {
+                markup +=    ' goto"  data-goto="'+page.goto+'" data-animation="'+animation+'"';
+            }
+            markup +=    ' src="pageimages/'+image+'.'+imageFileType+'" alt="" >';
+
+            if(page.link){
+                markup += '</a>'; 
+            }
         }
 
         // Add footer if defined
@@ -181,26 +189,27 @@ YAML.load('pages.yaml', function(result)
 
     function getHotspotsMarkup(hotspots){
         let markup = "";
-        if(typeof(hotspots) == "undefined"){
+        if(typeof(hotspots) == "undefined" || typeof(hotspots) == null){
             return markup;
         }
         for (var key in hotspots) {
             let hotspot = hotspots[key];
             let animation = "noAnimation";
+            if(hotspot != null){
+                if(typeof(hotspot.animation) != "undefined" || typeof(hotspot.animation) == null){
+                    animation = hotspot.animation;
+                }
 
-            if(typeof(hotspot.animation) != "undefined"){
-                animation = hotspot.animation;
+                markup += '<div class="hotspot goto" ';
+                markup += 'data-goto="'+hotspot.goto+'" ';
+                markup += 'data-animation="'+animation+'" ';
+                markup += 'style="';
+                markup += 'top:'+hotspot.top+';';
+                markup += 'left:'+hotspot.left+';';
+                markup += 'width:'+hotspot.width+';';
+                markup += 'height:'+hotspot.height+';';
+                markup += '"></div>';
             }
-
-            markup += '<div class="hotspot goto" ';
-            markup += 'data-goto="'+hotspot.goto+'" ';
-            markup += 'data-animation="'+animation+'" ';
-            markup += 'style="';
-            markup += 'top:'+hotspot.top+';';
-            markup += 'left:'+hotspot.left+';';
-            markup += 'width:'+hotspot.width+';';
-            markup += 'height:'+hotspot.height+';';
-            markup += '"></div>';
         }
         return markup;
     }
@@ -296,23 +305,6 @@ YAML.load('pages.yaml', function(result)
                 markup +='<div class="flex-1"></div>';
             }
 
-            // header:
-            //   navigation:
-            //     left: 
-            //       icon: "ios-arrow-left"
-            //       label: "Back"
-            //       goto: "cam"
-            //       animation: "moveInFromLeft"
-            //     title: "Image"
-            //     right:
-            //       label: "Edit"
-            //       goto: "edit"
-            //       animation: "moveInFromLeft"
-
-
-            
-
-
             // close header container
             markup +='</div>';
             return markup;
@@ -335,30 +327,27 @@ YAML.load('pages.yaml', function(result)
     }
 
     function applyStyles(styles){
+        if(checkIfDefined(styles, "page")){
+            for (var stylekey in styles.page) {
+                setStyle(".pt-page" ,stylekey, styles.page[stylekey]);
+            }
+        }
+
         if(checkIfDefined(styles, "headers")){
-            let myElements = document.querySelectorAll(".cd-header-navigation");
-
-            for (let i = 0; i < myElements.length; i++) {
-                if(checkIfDefined(styles.headers, "color")){
-                    myElements[i].style.color = styles.headers.color;
-                }
-                if(checkIfDefined(styles.headers, "backgroundColor")){
-                    myElements[i].style.backgroundColor = styles.headers.backgroundColor;
-                }
-                if(checkIfDefined(styles.headers, "borderBottomColor")){
-                    myElements[i].style.borderBottomColor = styles.headers.borderBottomColor;
-                }
+            for (var stylekey in styles.headers) {
+                setStyle(".cd-header-navigation" ,stylekey, styles.headers[stylekey]);
             }
-
         }
+
         if(checkIfDefined(styles, "links")){
-            myElements = document.querySelectorAll(".goto");
-            for (let i = 0; i < myElements.length; i++) {
-                if(checkIfDefined(styles.links, "color")){
-                    myElements[i].style.color = styles.links.color;
-                }
+            for (var stylekey in styles.links) {
+                setStyle("div.goto", stylekey, styles.links[stylekey]);
             }
         }
+    }
+
+    function setStyle(elem,style,value){
+        $(elem).css(style,value);
     }
     
     $( "body" ).keydown(function( event ) {
@@ -379,17 +368,25 @@ YAML.load('pages.yaml', function(result)
     // This lets you define Hotspots
     // -----------------------------
 
+    var isDrawing = false;
     var canvasInX = false;
     var canvasInY = false;
     var canvasOutX = false;
     var canvasOutY = false;
+    var width = false;
+    var height = false;
 
     function resetCoordinates(){
         canvasInX = false;
         canvasInY = false;
         canvasOutX = false;
         canvasOutY = false;
-        $( "#hotspotCanvas .hotspot" ).remove();
+        width = false;
+        height = false;
+        $( "#hotspotCanvas .hotspot" ).addClass("hide");
+        $( "#hotspotCanvas .infotext" ).remove();
+        $( "#hotspotTextarea" ).remove();
+        
     }
 
     $( "body" ).keyup(function( event ) {
@@ -405,7 +402,12 @@ YAML.load('pages.yaml', function(result)
         event.preventDefault();
       }
     });
+
+    // const hotspotCanvas = document.getElementById('hotspotCanvas');
+
     
+            
+
     $("#hotspotCanvas").click(function(event) {
 
         if(canvasInX != false && canvasOutX != false){
@@ -415,33 +417,60 @@ YAML.load('pages.yaml', function(result)
         if(canvasInX == false){
             canvasInX = event.clientX;
             canvasInY = event.clientY;
+            isDrawing = true;
         } else{
+            isDrawing = false;
             canvasOutX = event.clientX;
             canvasOutY = event.clientY;
-            let width = canvasOutX - canvasInX;
-            let height = canvasOutY - canvasInY;
-            markup = '<div class="hotspot" ';
-            markup += 'style="';
-            markup += 'top:'+canvasInY+'px;';
-            markup += 'left:'+canvasInX+'px;';
-            markup += 'width:'+width+'px;';
-            markup += 'height:'+height+'px;';
 
-            markup += '"><div class="infotext">Copied to clipboard</div><textarea id="hotspotTextarea">';
+            markup = '<div class="infotext">Copied to clipboard</div><textarea id="hotspotTextarea">';
             markup += 'top: "'+canvasInY+'px"\n';
             markup += 'left: "'+canvasInX+'px"\n';
             markup += 'width: "'+width+'px"\n';
-            markup += 'height: "'+height+'px"';
-            markup += '</textarea></div>';
-            $( markup ).appendTo( "#hotspotCanvas" );
+            markup += 'height: "'+height+'px"\n';
+            markup += 'goto: \n';
+            markup += 'animation: "moveInFromRight"';
+            markup += '</textarea>';
+            // markup = '<div class="infotext">text</div>';
+            $( markup ).appendTo("#canvasHotspot");
             $("#hotspotTextarea").select();
             document.execCommand('copy');
             $("#hotspotTextarea").blur();
             setTimeout(function(){
                 $(".infotext").addClass("hide");
             },2000);
+
         }
     });
+
+    $("#hotspotCanvas").mousemove(function(e) {
+        if (isDrawing === true) {
+            
+            width = e.clientX - canvasInX;
+            height = e.clientY - canvasInY;
+            drawHotspot(canvasInX, canvasInY, width, height);
+          }
+    });
+
+    function drawHotspot(inX, inY, width, height){
+        $("#canvasHotspot").removeClass("hide");
+        $("#canvasHotspot").css("top", inY+"px");
+        $("#canvasHotspot").css("left", inX+"px");
+        $("#canvasHotspot").css("width", width+"px");
+        $("#canvasHotspot").css("height", height+"px");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     // END of Hotspot-Canvas    
 
@@ -453,7 +482,6 @@ YAML.load('pages.yaml', function(result)
     function handleStart( e ) {
     
         if (e.touches.length > 1){
-            longpress = true;
             $("#pt-main").addClass("showHotspots");
             setTimeout(function(){
                 $("#pt-main").removeClass("showHotspots");

@@ -1339,7 +1339,7 @@
 html, body { height: 100%; background-color: #eee}
 
 .pt-perspective {
-    position: relative;
+    position: absolute;
     width: 375px;
     height: 667px;
     -webkit-perspective: 1200px;
@@ -2993,7 +2993,7 @@ a {
 }
 .pt-page {
     margin-top: 44px;
-    background: #dfdfdf;
+    background: #fff;
     padding:0;
     margin-top: 0;
 }
@@ -3081,6 +3081,17 @@ a {
 }
 
 
-.goto {
+div.goto {
     color: #007AFF;
 }
+
+#htmlContainer{
+    display: none;
+}
+
+
+
+
+
+
+

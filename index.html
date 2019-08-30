@@ -9,15 +9,37 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <!-- The Styles-->
+        <link href="assets/css/bootstrap.min.css" rel="stylesheet">
         <link href="assets/css/core.css" rel="stylesheet">
     </head>
     <body> 
 
         <!-- This helps you draw hotspots -->
-        <div id="hotspotCanvas" class="hide"></div> 
+        <div id="hotspotCanvas" class="hide"><div id="canvasHotspot" class="hotspot hide"></div></div> 
 
         <!-- This is the container of the pages --->
         <div id="pt-main" class="pt-perspective"></div>
+
+        <!-- This is the container you can put html to be included in -->
+        <div id="htmlContainer">
+            <div id="page4Form">
+                <div class="container">
+                    <br>
+                    <form>
+                      <div class="form-group">
+                        <label for="formName">Name</label>
+                        <input type="password" class="form-control" id="formName">
+                      </div>
+                      <div class="form-group">
+                        <label for="formEmail">Email address</label>
+                        <input type="email" class="form-control" id="formEmail">
+                      </div>
+                      <button type="button" class="btn btn-primary goto" data-goto="start" data-animation="moveInFromLeft">Send</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
         <!-- The JS -->
         <script type="text/javascript" src="assets/js/jquery.min.js"></script>
         <script type="text/javascript" src="assets/js/yaml.js"></script>

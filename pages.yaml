@@ -1,13 +1,5 @@
-
 index:
   title: "My Prototype"
-  styles:
-    headers:
-      color: "#fff"
-      backgroundColor: "#dd0000"
-      borderBottomColor: "#000"
-    links:
-      color: "#ff0"
   pages:
     start:
       goto: "cam"
@@ -18,13 +10,23 @@ index:
     cam:
       goto: "picture"
       hotspots:
-        switchCam:
-          top: "600px"
-          left: "316px"
-          width: "54px"
-          height: "44px"
-          goto: "picture"
+        switchCamera:
+          top: "596px"
+          left: "288px"
+          width: "87px"
+          height: "50px"
+          goto: camFront
           animation: "flipRight"
+    camFront: 
+      goto: "picture"
+      hotspots:
+        switchCamera:
+          top: "596px"
+          left: "288px"
+          width: "87px"
+          height: "50px"
+          goto: cam
+          animation: "flipLeft"
     picture:
       goto: "page3"
       clickthrough: false
@@ -37,6 +39,14 @@ index:
         image: "footer"
         goto: "page3"
         animation: "moveInFromRight"
+      hotspots:
+        middle:
+          top: 263px
+          left: 108px
+          width: 133px
+          height: 102px
+          goto: page3
+          animation: 
     page3:
       image: "longpage"
       goto: "start"
@@ -63,8 +73,6 @@ index:
             label: "Close"
             goto: "page3"
             animation: "moveOutFromTop"
-
-      
 
 
 
